@@ -1,49 +1,37 @@
 package com.School.SchoolReportSystem.controller;
 
-import com.School.SchoolReportSystem.entities.Disciplina;
-import com.School.SchoolReportSystem.services.DisciplinaService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.School.SchoolReportSystem.dto.CreateDisciplinaDto;
+import com.School.SchoolReportSystem.entitie.Disciplina;
+import com.School.SchoolReportSystem.service.DisciplinaService;
 
 @RestController
 @RequestMapping("/disciplinas")
 public class DisciplinaController {
 
-    private final DisciplinaService disciplinaService;
-
-    public DisciplinaController(DisciplinaService disciplinaService) {
-        this.disciplinaService = disciplinaService;
-    }
+    @Autowired
+    private DisciplinaService disciplinaService;
 
     @PostMapping
-    public Disciplina criarDisciplina(@RequestBody Disciplina disciplina) {
-        return disciplinaService.salvarDisciplina(disciplina);
+    public ResponseEntity<Disciplina> criarDisciplina(@RequestBody CreateDisciplinaDto createDisciplinaDto) {
+        Disciplina disciplina = disciplinaService.criarDisciplina(createDisciplinaDto.getNome(), createDisciplinaDto.getProfessorId());
+        return new ResponseEntity<>(disciplina, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Disciplina> listar() {
-        return disciplinaService.listarDisciplinas();
+    public ResponseEntity<List<Disciplina>> listarDisciplinas() {
+        return new ResponseEntity<>(disciplinaService.listarDisciplinas(), HttpStatus.OK);
     }
-
-    @GetMapping("/{id}")
-    public Optional<Disciplina> buscarPorId(@PathVariable Long id) {
-        return disciplinaService.buscarPorId(id);
-    }
-
-    @GetMapping("/professor/{professorId}")
-    public List<Disciplina> listarPorProfessor(@PathVariable Long professorId) {
-        return disciplinaService.listarPorProfessor(professorId);
-    }
-
-    @PutMapping("/{id}")
-    public Disciplina atualizar(@PathVariable Long id, @RequestBody Disciplina nova) {
-        return disciplinaService.atualizarDisciplina(id, nova);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        disciplinaService.deletarDisciplina(id);
-    }
+    
 }
+

@@ -1,63 +1,42 @@
 package com.School.SchoolReportSystem.controller;
 
-import com.School.SchoolReportSystem.entities.Nota;
-import com.School.SchoolReportSystem.services.NotaService;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.School.SchoolReportSystem.dto.CreateNotaDto;
+import com.School.SchoolReportSystem.entitie.Nota;
+import com.School.SchoolReportSystem.service.NotaService;
 
 @RestController
 @RequestMapping("/notas")
 public class NotaController {
 
-    private final NotaService notaService;
-
     @Autowired
-    public NotaController(NotaService notaService) {
-        this.notaService = notaService;
+    private NotaService notaService;
+
+   @PostMapping
+    public ResponseEntity<Nota> cadastrarNota(@RequestBody CreateNotaDto createNotaDto) {
+        Nota nota = notaService.cadastrarNota(createNotaDto.getValor(), createNotaDto.getDisciplinaId(), createNotaDto.getAlunoId());
+        return new ResponseEntity<>(nota, HttpStatus.CREATED);
     }
 
-    @PostMapping("/salvar")
-    public Nota salvarNota(@RequestBody Nota nota, @RequestParam Long professorId) {
-        return notaService.salvarNota(nota, professorId);
+    @GetMapping("/aluno")
+    public ResponseEntity<List<Nota>> getNotasDoAluno() {
+        return new ResponseEntity<>(notaService.getNotasDoAluno(), HttpStatus.OK);
     }
 
-    // Listar todas as notas
-    @GetMapping
-    public List<Nota> listarNotas() {
-        return notaService.listarNotas();
-    }
-
-    // Buscar nota por ID
-    @GetMapping("/{id}")
-    public Nota buscarPorId(@PathVariable Long id) {
-        return notaService.buscarPorId(id)
-                .orElseThrow(() -> new RuntimeException("Nota não encontrada"));
-    }
-
-    // Atualizar nota
-    @PutMapping("/{id}")
-    public Nota atualizarNota(@PathVariable Long id, @RequestBody Nota notaAtualizada) {
-        return notaService.atualizarNota(id, notaAtualizada);
-    }
-
-    // Deletar nota
-    @DeleteMapping("/{id}")
-    public void deletarNota(@PathVariable Long id) {
-        notaService.deletarNota(id);
-    }
-
-    // Listar notas de um aluno específico
-    @GetMapping("/aluno/{alunoId}")
-    public List<Nota> listarNotasPorAluno(@PathVariable Long alunoId) {
-        return notaService.listarNotasPorAluno(alunoId);
-    }
-
-    // Listar notas por disciplina
-    @GetMapping("/disciplina/{disciplinaId}")
-    public List<Nota> listarNotasPorDisciplina(@PathVariable Long disciplinaId) {
-        return notaService.listarNotasPorDisciplina(disciplinaId);
+    @GetMapping("/disciplina/{id}")
+    public ResponseEntity<List<Nota>> getNotasDaDisciplina(@PathVariable Long id) {
+        return new ResponseEntity<>(notaService.getNotasDaDisciplina(id), HttpStatus.OK);
     }
 }
+
