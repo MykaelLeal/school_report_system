@@ -9,7 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateDisciplinaDto {
-    private String nome;
-    private Long professorId;
+public class NotaDTO {
+    
+    private Double valor;
+    private Long disciplinaId;
+    private Long alunoId;
 }
+

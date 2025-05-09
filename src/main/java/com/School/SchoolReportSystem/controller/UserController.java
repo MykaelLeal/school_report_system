@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.School.SchoolReportSystem.dto.CreateUserDto;
-import com.School.SchoolReportSystem.dto.LoginUserDTO;
-import com.School.SchoolReportSystem.dto.RecoveryJwtTokenDto;
+import com.School.SchoolReportSystem.dto.userDTO.CreateUserDto;
+import com.School.SchoolReportSystem.dto.userDTO.LoginUserDTO;
+import com.School.SchoolReportSystem.dto.userDTO.RecoveryJwtTokenDto;
 import com.School.SchoolReportSystem.service.UserService;
 
 @RestController

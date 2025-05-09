@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.School.SchoolReportSystem.dto.CreateUserDto;
-import com.School.SchoolReportSystem.dto.LoginUserDTO;
-import com.School.SchoolReportSystem.dto.RecoveryJwtTokenDto;
+import com.School.SchoolReportSystem.dto.userDTO.CreateUserDto;
+import com.School.SchoolReportSystem.dto.userDTO.LoginUserDTO;
+import com.School.SchoolReportSystem.dto.userDTO.RecoveryJwtTokenDto;
 import com.School.SchoolReportSystem.entitie.Role;
 import com.School.SchoolReportSystem.entitie.User;
 import com.School.SchoolReportSystem.repository.UserRepository;
@@ -64,5 +65,27 @@ public class UserService {
 
         // Salva o novo usuário no banco de dados
         userRepository.save(newUser);
+
     }
+        // Método responsável por buscar usuários já autenticados
+        public User getAuthenticatedUser() {
+          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // Verifica se o usuario está autenticado
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new RuntimeException("Usuário não autenticado.");
+            }
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+            return userRepository.findById(userDetails.getId())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        }   
+        
+        // Método responsável por buscar o usuário por ID
+        public User getUserById(Long id) {
+            return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        }
+        
+    
 }

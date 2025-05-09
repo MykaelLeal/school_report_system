@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.School.SchoolReportSystem.dto.CreateNotaDto;
+import com.School.SchoolReportSystem.dto.NotaDTO;
 import com.School.SchoolReportSystem.entitie.Nota;
 import com.School.SchoolReportSystem.service.NotaService;
 
@@ -23,17 +23,21 @@ public class NotaController {
     @Autowired
     private NotaService notaService;
 
+    // Criar nota
    @PostMapping
-    public ResponseEntity<Nota> cadastrarNota(@RequestBody CreateNotaDto createNotaDto) {
-        Nota nota = notaService.cadastrarNota(createNotaDto.getValor(), createNotaDto.getDisciplinaId(), createNotaDto.getAlunoId());
+    public ResponseEntity<Nota> createNota(@RequestBody NotaDTO notaDTO) {
+        Nota nota = notaService.createNota(notaDTO.getValor(), notaDTO.getDisciplinaId(), notaDTO.getAlunoId());
         return new ResponseEntity<>(nota, HttpStatus.CREATED);
     }
 
+    // Buscar notas do aluno autenticado
     @GetMapping("/aluno")
-    public ResponseEntity<List<Nota>> getNotasDoAluno() {
-        return new ResponseEntity<>(notaService.getNotasDoAluno(), HttpStatus.OK);
-    }
+       public ResponseEntity<List<Nota>> getNotasDoAluno() {
+       return ResponseEntity.ok(notaService.getNotasDoAluno());
+}
 
+
+    // Buscar as notas da Disciplina por ID
     @GetMapping("/disciplina/{id}")
     public ResponseEntity<List<Nota>> getNotasDaDisciplina(@PathVariable Long id) {
         return new ResponseEntity<>(notaService.getNotasDaDisciplina(id), HttpStatus.OK);

@@ -1,4 +1,4 @@
-package com.School.SchoolReportSystem.dto;
+package com.School.SchoolReportSystem.dto.userDTO;
 
 import lombok.Getter;
 import lombok.Setter;
