@@ -30,7 +30,7 @@ public class DisciplinaController {
     private UserService userService;
 
     // Criar disciplina
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Disciplina> createDisciplina(@RequestBody DisciplinaDTO createDisciplinaDto) {
         Disciplina disciplina = disciplinaService.createDisciplina(createDisciplinaDto.getNome(), createDisciplinaDto.getProfessorId());
         return new ResponseEntity<>(disciplina, HttpStatus.CREATED);

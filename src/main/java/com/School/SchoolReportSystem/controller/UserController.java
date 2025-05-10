@@ -53,10 +53,5 @@ public class UserController {
         return new ResponseEntity<>("Professor autenticado com sucesso", HttpStatus.OK);
     }
 
-    // Testa se o endpoint de autenticação do Admin está funcionando
-    @GetMapping("/test/admin")
-    public ResponseEntity<String> getAdminAuthenticationTest() {
-        return new ResponseEntity<>("Administrador autenticado com sucesso", HttpStatus.OK);
-    }
 
 }

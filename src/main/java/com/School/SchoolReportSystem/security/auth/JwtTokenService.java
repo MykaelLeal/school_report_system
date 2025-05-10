@@ -17,7 +17,7 @@ public class JwtTokenService {
 
     private static final String SECRET_KEY = "4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P"; // Chave secreta utilizada para gerar e verificar o token 
 
-    private static final String ISSUER = "pizzurg-api"; // Emissor do token
+    private static final String ISSUER = "school_system-api"; // Emissor do token
 
     public String generateToken(UserDetailsImpl user) {
         try {

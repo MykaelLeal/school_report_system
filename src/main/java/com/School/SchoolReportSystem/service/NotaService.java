@@ -36,14 +36,14 @@ public class NotaService {
             throw new RuntimeException("Você não é o professor dessa disciplina.");
         }
         
-        // 
+        // Verifica se é aluno
         User aluno = userService.getUserById(alunoId);
         if (aluno.getRoles().stream().noneMatch(role -> role.getName().equals(RoleName.ROLE_ALUNO))) {
            throw new RuntimeException("Só é possível lançar notas para alunos.");
 
         }
 
-        // Cadastra a nota
+        // Cadastra a nota do aluno
         Nota nota = new Nota();
         nota.setValor(valor);
         nota.setDisciplina(disciplina);
@@ -70,5 +70,56 @@ public class NotaService {
         }
         return notaRepository.findByDisciplinaAndDisciplinaProfessor(disciplina, professor);
     }
+
+    // Novo método: Atualizar nota por ID
+    public Nota updateNota(Long notaId, Double novoValor) {
+        User professor = userService.getAuthenticatedUser();
+        Nota nota = notaRepository.findById(notaId)
+                .orElseThrow(() -> new RuntimeException("Nota não encontrada."));
+
+        // Verifica se o professor é o dono da disciplina dessa nota
+        if (!nota.getDisciplina().getProfessor().getId().equals(professor.getId())) {
+            throw new RuntimeException("Você não é o professor dessa disciplina.");
+        }
+
+        nota.setValor(novoValor);
+        return notaRepository.save(nota);
+    }
+
+    // Novo método: Deletar nota por ID
+    public void deleteNota(Long notaId) {
+        User professor = userService.getAuthenticatedUser();
+        Nota nota = notaRepository.findById(notaId)
+                .orElseThrow(() -> new RuntimeException("Nota não encontrada."));
+
+        if (!nota.getDisciplina().getProfessor().getId().equals(professor.getId())) {
+            throw new RuntimeException("Você não é o professor dessa disciplina.");
+        }
+
+        notaRepository.delete(nota);
+    }
+
+    // Novo método: Atualizar nota de um aluno por disciplina
+    public Nota updateNotaPorDisciplinaEAluno(Long disciplinaId, Long alunoId, Double novoValor) {
+        User professor = userService.getAuthenticatedUser();
+        Disciplina disciplina = disciplinaRepository.findById(disciplinaId)
+                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada."));
+
+        if (!disciplina.getProfessor().getId().equals(professor.getId())) {
+            throw new RuntimeException("Você não é o professor dessa disciplina.");
+        }
+
+        User aluno = userService.getUserById(alunoId);
+        if (aluno.getRoles().stream().noneMatch(role -> role.getName().equals(RoleName.ROLE_ALUNO))) {
+            throw new RuntimeException("Usuário informado não é um aluno.");
+        }
+
+        Nota nota = notaRepository.findByDisciplinaAndAluno(disciplina, aluno)
+                .orElseThrow(() -> new RuntimeException("Nota não encontrada para esse aluno na disciplina."));
+
+        nota.setValor(novoValor);
+        return notaRepository.save(nota);
+    }
 }
+
 

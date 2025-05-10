@@ -31,12 +31,12 @@ public class SecurityConfiguration {
             "/users/test"
     };
 
-    public static final String[] ENDPOINTS_CUSTOMER = {
-            "/users/test/customer"
+    public static final String[] ENDPOINTS_ALUNO = {
+            "/users/test/aluno"
     };
 
-    public static final String[] ENDPOINTS_ADMIN = {
-            "/users/test/administrator"
+    public static final String[] ENDPOINTS_PROFESSOR = {
+            "/users/test/professor"
     };
 
     @Bean
@@ -46,8 +46,8 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                .requestMatchers(ENDPOINTS_ADMIN).hasRole("ADMINISTRATOR")
-                .requestMatchers(ENDPOINTS_CUSTOMER).hasRole("CUSTOMER")
+                .requestMatchers(ENDPOINTS_PROFESSOR).hasRole("PROFESSOR")
+                .requestMatchers(ENDPOINTS_ALUNO).hasRole("ALUNO")
                 .anyRequest().denyAll()
             )
             .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
