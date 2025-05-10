@@ -53,6 +53,9 @@ public class UserService {
 
     // Método responsável por criar um usuário
     public void createUser(CreateUserDto createUserDto) {
+        if (userRepository.existsByEmail(createUserDto.email())) {
+           throw new RuntimeException("Email já cadastrado.");
+    }
 
         // Cria um novo usuário com os dados fornecidos
         User newUser = User.builder()
@@ -65,27 +68,27 @@ public class UserService {
 
         // Salva o novo usuário no banco de dados
         userRepository.save(newUser);
-
     }
-        // Método responsável por buscar usuários já autenticados
-        public User getAuthenticatedUser() {
-          Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            // Verifica se o usuario está autenticado
-            if (authentication == null || !authentication.isAuthenticated()) {
-                throw new RuntimeException("Usuário não autenticado.");
-            }
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    // Busacr Usuário por ID
+    public User getUserById(Long id) {
+      return userRepository.findById(id)
+        .orElseThrow();
+}
 
-            return userRepository.findById(userDetails.getId())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-        }   
-        
-        // Método responsável por buscar o usuário por ID
-        public User getUserById(Long id) {
-            return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    // Busca usuários autenticados
+    public User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() 
+            || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new RuntimeException("Usuário não autenticado.");
         }
-        
-    
+
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow();
+    }
+
+
 }

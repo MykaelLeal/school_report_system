@@ -27,17 +27,13 @@ import org.springframework.lang.NonNull;
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtTokenService jwtTokenService; // Servico do JWT
+    private JwtTokenService jwtTokenService; // Service que definimos anteriormente
 
     @Autowired
-    private UserRepository userRepository; // Repositorio do Usuario
+    private UserRepository userRepository; // Repository que definimos anteriormente
 
     @Override
-    protected void doFilterInternal( @NonNull HttpServletRequest request,
-                                     @NonNull HttpServletResponse response, 
-                                     @NonNull FilterChain filterChain) 
-                                     throws ServletException, IOException {
-        
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Verifica se o endpoint requer autenticação antes de processar a requisição
         if (checkIfEndpointIsNotPublic(request)) {
             String token = recoveryToken(request); // Recupera o token do cabeçalho Authorization da requisição

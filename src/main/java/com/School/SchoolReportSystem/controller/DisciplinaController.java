@@ -38,7 +38,7 @@ public class DisciplinaController {
 
 
     // Buscar todas as Disciplinas
-    @GetMapping("/disciplinas")
+    @GetMapping("/")
     public ResponseEntity<List<Disciplina>> getDisciplinas() {
         return new ResponseEntity<>(disciplinaService.getAllDisciplinas(), HttpStatus.OK);
     }

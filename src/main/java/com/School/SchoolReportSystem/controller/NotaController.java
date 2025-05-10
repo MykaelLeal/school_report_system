@@ -26,7 +26,7 @@ public class NotaController {
     private NotaService notaService;
 
     // Criar nota
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Nota> createNota(@RequestBody NotaDTO notaDTO) {
         Nota nota = notaService.createNota(notaDTO.getValor(), notaDTO.getDisciplinaId(), notaDTO.getAlunoId());
         return new ResponseEntity<>(nota, HttpStatus.CREATED);

@@ -22,39 +22,41 @@ public class SecurityConfiguration {
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/users/login",
-            "/users"
+    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+            "/users/login", // Url que usaremos para fazer login
+            "/users" // Url que usaremos para criar um usuário
     };
 
-    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-            "/users/test"
+    // Endpoints que requerem autenticação para serem acessados
+    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
+            "/disciplinas/create", "/disciplinas", "/disciplinas/update", "/disciplinas/remove",
+            "/notas/create", "/notas", "/notas/update", "/notas/remove"
+
+
     };
 
-    public static final String[] ENDPOINTS_ALUNO = {
-            "/users/test/aluno"
+    // Endpoints que só podem ser acessador por usuários com permissão de cliente
+    public static final String [] ENDPOINTS_ALUNO = {
+            "/users/test/customer"
     };
 
-    public static final String[] ENDPOINTS_PROFESSOR = {
-            "/users/test/professor"
+    // Endpoints que só podem ser acessador por usuários com permissão de Professor
+    public static final String [] ENDPOINTS_PROFESSOR = {
+         "/notas/create", "/notas", "/notas/update", "/notas/remove"
+           
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(authz -> authz
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.csrf(csrf -> csrf.disable()) // Desativa a proteção contra CSRF
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(requests -> requests // Habilita a autorização para as requisições HTTP
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED).permitAll()
                 .requestMatchers(ENDPOINTS_WITH_AUTHENTICATION_REQUIRED).authenticated()
-                .requestMatchers(ENDPOINTS_PROFESSOR).hasRole("PROFESSOR")
+                .requestMatchers(ENDPOINTS_PROFESSOR).hasRole("PROFESSOR") 
                 .requestMatchers(ENDPOINTS_ALUNO).hasRole("ALUNO")
-                .anyRequest().denyAll()
-            )
-            .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    
-        return http.build();
+                .anyRequest().denyAll()).addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
-    
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -65,4 +67,5 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
