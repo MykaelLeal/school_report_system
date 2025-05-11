@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.School.SchoolReportSystem.dto.notaDTO.NotaDTO;
+import com.School.SchoolReportSystem.dto.notaDTO.NotaResponseDTO;
 import com.School.SchoolReportSystem.entitie.Nota;
 import com.School.SchoolReportSystem.service.NotaService;
 
@@ -24,19 +25,23 @@ public class NotaController {
 
     @Autowired
     private NotaService notaService;
+    
 
     // Criar nota
     @PostMapping("/create")
-    public ResponseEntity<Nota> createNota(@RequestBody NotaDTO notaDTO) {
-        Nota nota = notaService.createNota(notaDTO.getValor(), notaDTO.getDisciplinaId(), notaDTO.getAlunoId());
-        return new ResponseEntity<>(nota, HttpStatus.CREATED);
+    public ResponseEntity<NotaResponseDTO> createNota(@RequestBody NotaDTO notaDTO) {
+        Nota notaCreate = notaService.createNota(notaDTO.getValor(), notaDTO.getDisciplinaId(), notaDTO.getAlunoId());
+        NotaResponseDTO response = new NotaResponseDTO("Disciplina criada com sucesso.", notaCreate);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Buscar notas do aluno autenticado
+
+    // Buscar notas do aluno 
     @GetMapping("/aluno")
     public ResponseEntity<List<Nota>> getNotasDoAluno() {
         return ResponseEntity.ok(notaService.getNotasDoAluno());
     }
+
 
     // Buscar notas da disciplina pelo ID
     @GetMapping("/disciplina/{id}")
@@ -44,19 +49,24 @@ public class NotaController {
         return ResponseEntity.ok(notaService.getNotasDaDisciplina(id));
     }
 
+
     // Atualizar nota por ID
     @PutMapping("/{id}")
-    public ResponseEntity<Nota> updateNota(@PathVariable Long id, @RequestBody Double novoValor) {
-        Nota notaAtualizada = notaService.updateNota(id, novoValor);
-        return ResponseEntity.ok(notaAtualizada);
+    public ResponseEntity<NotaResponseDTO> updateNota(@PathVariable Long id, @RequestBody Double novoValor) {
+        Nota updateNota = notaService.updateNota(id, novoValor);
+        NotaResponseDTO response2 = new NotaResponseDTO("Nota atualizada com sucesso.", updateNota);
+        return ResponseEntity.status(HttpStatus.OK).body(response2);
     }
+
 
     // Deletar nota por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNota(@PathVariable Long id) {
-        notaService.deleteNota(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<NotaResponseDTO> deleteNota(@PathVariable Long id) {
+        Nota remove = notaService.deleteNota(id);
+        NotaResponseDTO response3 = new NotaResponseDTO("Nota removida com sucesso.", remove);
+        return ResponseEntity.status(HttpStatus.OK).body(response3);
     }
+
 
     // Atualizar nota por Disciplina e Aluno
     @PutMapping("/disciplina/{disciplinaId}/aluno/{alunoId}")

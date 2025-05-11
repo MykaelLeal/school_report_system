@@ -23,6 +23,7 @@ public class NotaService {
 
     @Autowired
     private UserService userService;
+    
 
     public Nota createNota(Double valor, Long disciplinaId, Long alunoId) {
         // Busca o professor autenticado
@@ -57,6 +58,7 @@ public class NotaService {
         return notaRepository.findByAluno(aluno);
     }
 
+
     // Método responsável por buscar as notas da disciplina
     public List<Nota> getNotasDaDisciplina(Long disciplinaId) {
         // Verifica se o usuário está autenticado
@@ -71,7 +73,8 @@ public class NotaService {
         return notaRepository.findByDisciplinaAndDisciplinaProfessor(disciplina, professor);
     }
 
-    // Novo método: Atualizar nota por ID
+
+    // Atualizar nota por ID
     public Nota updateNota(Long notaId, Double novoValor) {
         User professor = userService.getAuthenticatedUser();
         Nota nota = notaRepository.findById(notaId)
@@ -81,13 +84,13 @@ public class NotaService {
         if (!nota.getDisciplina().getProfessor().getId().equals(professor.getId())) {
             throw new RuntimeException("Você não é o professor dessa disciplina.");
         }
-
         nota.setValor(novoValor);
         return notaRepository.save(nota);
     }
 
-    // Novo método: Deletar nota por ID
-    public void deleteNota(Long notaId) {
+
+    // Deletar nota por ID
+    public Nota deleteNota(Long notaId) {
         User professor = userService.getAuthenticatedUser();
         Nota nota = notaRepository.findById(notaId)
                 .orElseThrow(() -> new RuntimeException("Nota não encontrada."));
@@ -95,11 +98,13 @@ public class NotaService {
         if (!nota.getDisciplina().getProfessor().getId().equals(professor.getId())) {
             throw new RuntimeException("Você não é o professor dessa disciplina.");
         }
-
         notaRepository.delete(nota);
+        return nota;
+
     }
 
-    // Novo método: Atualizar nota de um aluno por disciplina
+
+    // Atualizar nota de um aluno por disciplina
     public Nota updateNotaPorDisciplinaEAluno(Long disciplinaId, Long alunoId, Double novoValor) {
         User professor = userService.getAuthenticatedUser();
         Disciplina disciplina = disciplinaRepository.findById(disciplinaId)

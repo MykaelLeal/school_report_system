@@ -30,16 +30,16 @@ public class DisciplinaController {
     @Autowired
     private DisciplinaService disciplinaService;
     private UserService userService;
+    
 
     // Criar disciplina
     @PostMapping("/create")
     public ResponseEntity<DisciplinaResponseDTO> createDisciplina(@RequestBody DisciplinaDTO createDisciplinaDto) {
-        Disciplina disciplina = disciplinaService.createDisciplina(createDisciplinaDto.getNome(), createDisciplinaDto.getProfessorId());
-        DisciplinaResponseDTO response = new DisciplinaResponseDTO("Disciplina criada com sucesso.", disciplina);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        
-        
+        Disciplina create = disciplinaService.createDisciplina(createDisciplinaDto.getNome(), createDisciplinaDto.getProfessorId());
+        DisciplinaResponseDTO response = new DisciplinaResponseDTO("Disciplina criada com sucesso.", create);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);  
     }
+
 
     // Buscar todas as Disciplinas
     @GetMapping("/")
@@ -71,15 +71,16 @@ public class DisciplinaController {
                  DisciplinaResponseDTO response3 = new DisciplinaResponseDTO("Não é o professor da disciplina.", disciplinaExist);
                  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response3);
             }
-            // Atribui o novo professor à disciplina
-            disciplinaExist.setProfessor(professor);
+              // Atribui o novo professor à disciplina
+              disciplinaExist.setProfessor(professor);
         }
-        // Salva a disciplina atualizada
-        Disciplina disciplinaAtualizada = disciplinaService.saveDisciplina(disciplinaExist);
-        // Retorna 200 OK com a disciplina atualizada
-         DisciplinaResponseDTO response4 = new DisciplinaResponseDTO("Disciplina atualizada com sucesso.", disciplinaAtualizada);
-         return ResponseEntity.status(HttpStatus.OK).body(response4);
+             // Salva a disciplina atualizada
+             Disciplina disciplinaAtualizada = disciplinaService.saveDisciplina(disciplinaExist);
+             // Retorna 200 OK com a disciplina atualizada
+             DisciplinaResponseDTO response4 = new DisciplinaResponseDTO("Disciplina atualizada com sucesso.", disciplinaAtualizada);
+             return ResponseEntity.status(HttpStatus.OK).body(response4);
     }
+
 
     // Busca disciplina por ID
     @GetMapping("/{id}")
@@ -88,12 +89,13 @@ public class DisciplinaController {
         return new ResponseEntity<>(disciplina, HttpStatus.OK);
     }
 
+
    // Deleta disciplina por ID
    @DeleteMapping("/{id}")
     public ResponseEntity<DisciplinaResponseDTO> deleteDisciplina(@PathVariable Long id) {
-       Disciplina removida = disciplinaService.deleteDisciplina(id);
-       DisciplinaResponseDTO response5 = new DisciplinaResponseDTO("Disciplina removida com sucesso.", removida);
-       return ResponseEntity.ok(response5);
+       Disciplina remove = disciplinaService.deleteDisciplina(id);
+       DisciplinaResponseDTO response5 = new DisciplinaResponseDTO("Disciplina removida com sucesso.", remove);
+       return ResponseEntity.status(HttpStatus.OK).body(response5);
 }
 
 

@@ -22,30 +22,48 @@ public class SecurityConfiguration {
     @Autowired
     private UserAuthenticationFilter userAuthenticationFilter;
 
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
-            "/users/login", // Url que usaremos para fazer login
-            "/users", // Url que usaremos para criar um usuário
-            "/disciplinas/create", "/disciplinas", "/disciplinas/update", "/disciplinas/remove",
-            "/notas/create", "/notas", "/notas/update", "/notas/remove" 
+    // Endpoints que NÃO requerem autenticação para serem acessados (públicos)
+    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED = {
+        "/users/login",       // Login de usuário
+        "/users"              // Criação de novo usuário
     };
 
-    // Endpoints que requerem autenticação para serem acessados
-    public static final String [] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
-          
+    // Endpoints que requerem autenticação para serem acessados (usuário logado)
+    public static final String[] ENDPOINTS_WITH_AUTHENTICATION_REQUIRED = {
+        "/disciplinas/",             // Listar disciplinas (GET)
+        "/disciplinas/create",      // Criar disciplina (POST)
+        "/disciplinas/{id}",       // Buscar disciplina por ID (GET)
+        "/disciplinas/{id}",      // Atualizar disciplina (PUT)
+        "/disciplinas/{id}",     // Deletar disciplina (DELETE)
 
+
+        "/notas/create",                                     // Criar nota (POST)
+        "/notas/aluno",                                     // Listar notas do aluno (GET)
+        "/notas/disciplina/{id}",                          // Listar notas de uma disciplina (GET)
+        "/notas/{id}",                                    // Atualizar nota por ID (PUT)
+        "/notas/{id}",                                   // Deletar nota por ID (DELETE)
+        "/notas/disciplina/{disciplinaId}/aluno/{alunoId}",  // Atualizar nota por disciplina e aluno (PUT)
 
     };
 
-    // Endpoints que só podem ser acessador por usuários com permissão de cliente
-    public static final String [] ENDPOINTS_ALUNO = {
-            "/users/test/aluno",
-           
+    // Endpoints acessíveis apenas por usuários com permissão de Aluno
+    public static final String[] ENDPOINTS_ALUNO = {
+        "/users/test/aluno",
+        "/notas/aluno",                  // Visualizar suas notas
+        "/disciplinas/"                 // Visualizar disciplinas disponíveis
     };
 
-    // Endpoints que só podem ser acessador por usuários com permissão de Professor
-    public static final String [] ENDPOINTS_PROFESSOR = {
-       
+    // Endpoints acessíveis apenas por usuários com permissão de Professor
+    public static final String[] ENDPOINTS_PROFESSOR = {
+        "/users/test/professor",
+        "/disciplinas/create",                  // Criar disciplina (POST)
+        "/disciplinas/{id}",                   // Buscar disciplina por ID (GET)
+        "/disciplinas/{id}",                  // Atualizar disciplina por ID (PUT)
+        "/notas/create",                     // Criar nota (POST)
+        "/notas/aluno",                     // Listar notas do aluno (GET)
+
     };
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
