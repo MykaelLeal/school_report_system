@@ -69,14 +69,15 @@ public class DisciplinaService {
     
     
     // Método responsável por deletar disciplinas por ID
-    public void deleteDisciplina(Long disciplinaId) {
-        // Verifica se a disciplina existe
+    public Disciplina deleteDisciplina(Long disciplinaId) {
         Disciplina disciplina = disciplinaRepository.findById(disciplinaId)
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada."));
+            .orElseThrow(() -> new RuntimeException("Disciplina não encontrada."));
     
-        // Deleta a disciplina
         disciplinaRepository.delete(disciplina);
-    }
+        return disciplina;
+        
+}
+
     
 }
 

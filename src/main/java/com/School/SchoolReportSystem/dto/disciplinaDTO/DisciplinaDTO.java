@@ -1,4 +1,4 @@
-package com.School.SchoolReportSystem.dto;
+package com.School.SchoolReportSystem.dto.disciplinaDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotaDTO {
-    
-    private Double valor;
-    private Long disciplinaId;
-    private Long alunoId;
+public class DisciplinaDTO {
+    private String nome;
+    private Long professorId;
 }
-

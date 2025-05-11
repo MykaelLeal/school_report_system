@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.School.SchoolReportSystem.dto.NotaDTO;
+import com.School.SchoolReportSystem.dto.notaDTO.NotaDTO;
 import com.School.SchoolReportSystem.entitie.Nota;
 import com.School.SchoolReportSystem.service.NotaService;
 

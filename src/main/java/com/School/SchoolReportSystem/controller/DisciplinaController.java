@@ -1,5 +1,6 @@
 package com.School.SchoolReportSystem.controller;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.School.SchoolReportSystem.dto.DisciplinaDTO;
+import com.School.SchoolReportSystem.dto.disciplinaDTO.DisciplinaDTO;
+import com.School.SchoolReportSystem.dto.disciplinaDTO.DisciplinaResponseDTO;
 import com.School.SchoolReportSystem.entitie.Disciplina;
 import com.School.SchoolReportSystem.entitie.User;
 import com.School.SchoolReportSystem.enums.RoleName;
@@ -31,11 +33,13 @@ public class DisciplinaController {
 
     // Criar disciplina
     @PostMapping("/create")
-    public ResponseEntity<Disciplina> createDisciplina(@RequestBody DisciplinaDTO createDisciplinaDto) {
+    public ResponseEntity<DisciplinaResponseDTO> createDisciplina(@RequestBody DisciplinaDTO createDisciplinaDto) {
         Disciplina disciplina = disciplinaService.createDisciplina(createDisciplinaDto.getNome(), createDisciplinaDto.getProfessorId());
-        return new ResponseEntity<>(disciplina, HttpStatus.CREATED);
+        DisciplinaResponseDTO response = new DisciplinaResponseDTO("Disciplina criada com sucesso.", disciplina);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        
+        
     }
-
 
     // Buscar todas as Disciplinas
     @GetMapping("/")
@@ -46,11 +50,13 @@ public class DisciplinaController {
 
     // Atualizar disciplina por ID
     @PutMapping("/{id}")
-    public ResponseEntity<Disciplina> updateDisciplina(@PathVariable Long id, @RequestBody DisciplinaDTO disciplinaDTO) {
+    public ResponseEntity<DisciplinaResponseDTO> updateDisciplina(@PathVariable Long id, @RequestBody DisciplinaDTO disciplinaDTO) {
         // Verifica se a disciplina existe
         Disciplina disciplinaExist = disciplinaService.getDisciplinaById(id);
-        if (disciplinaExist == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Retorna 404 se não achar
+        DisciplinaResponseDTO response2 = new DisciplinaResponseDTO("Disciplina não encontrada.", disciplinaExist);
+        if (disciplinaExist == null) { 
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response2);
+              
         }
         // Atualiza o nome da disciplina
         disciplinaExist.setNome(disciplinaDTO.getNome());
@@ -62,7 +68,8 @@ public class DisciplinaController {
                     .stream()
                     .anyMatch(role -> role.getName().equals(RoleName.ROLE_PROFESSOR));
             if (!isProfessor) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);  // Retorna 400 se não for professor válido
+                 DisciplinaResponseDTO response3 = new DisciplinaResponseDTO("Não é o professor da disciplina.", disciplinaExist);
+                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response3);
             }
             // Atribui o novo professor à disciplina
             disciplinaExist.setProfessor(professor);
@@ -70,7 +77,8 @@ public class DisciplinaController {
         // Salva a disciplina atualizada
         Disciplina disciplinaAtualizada = disciplinaService.saveDisciplina(disciplinaExist);
         // Retorna 200 OK com a disciplina atualizada
-        return new ResponseEntity<>(disciplinaAtualizada, HttpStatus.OK);
+         DisciplinaResponseDTO response4 = new DisciplinaResponseDTO("Disciplina atualizada com sucesso.", disciplinaAtualizada);
+         return ResponseEntity.status(HttpStatus.OK).body(response4);
     }
 
     // Busca disciplina por ID
@@ -82,9 +90,10 @@ public class DisciplinaController {
 
    // Deleta disciplina por ID
    @DeleteMapping("/{id}")
-     public ResponseEntity<Void> deleteDisciplina(@PathVariable Long id) {
-       disciplinaService.deleteDisciplina(id);
-       return ResponseEntity.noContent().build(); 
+    public ResponseEntity<DisciplinaResponseDTO> deleteDisciplina(@PathVariable Long id) {
+       Disciplina removida = disciplinaService.deleteDisciplina(id);
+       DisciplinaResponseDTO response5 = new DisciplinaResponseDTO("Disciplina removida com sucesso.", removida);
+       return ResponseEntity.ok(response5);
 }
 
 

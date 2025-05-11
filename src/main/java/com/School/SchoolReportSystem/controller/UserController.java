@@ -1,5 +1,8 @@
 package com.School.SchoolReportSystem.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +35,12 @@ public class UserController {
 
     // Cria o Usuário
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody CreateUserDto createUserDto) {
+    public ResponseEntity<Map<String, String>> createUser(@RequestBody CreateUserDto createUserDto) {
         userService.createUser(createUserDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Map<String, String> msg = new HashMap<>();
+        msg.put("mensagem", "Usuário criado com sucesso.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+
     }
 
     // Buscar o usuário por ID
